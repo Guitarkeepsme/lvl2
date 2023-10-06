@@ -5,15 +5,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	"unicode"
-	"unicode/utf8"
 )
-
-/* "a4bc2d5e" => "aaaabccddddde"
-"abcd" => "abcd"
-"45" => "" (некорректная строка)
-"" => ""
-*/
 
 type Unpacker interface {
 	Unpack()
@@ -29,84 +21,62 @@ func main() {
 	_, err := fmt.Scanf("%s", &pkdString)
 	if err != nil {
 		log.Println(err)
+	} else if pkdString.Unpack() == "" {
+		fmt.Println("Некорректная строка!")
 	} else {
 		fmt.Println("Распакованная строка: ", pkdString.Unpack())
 	}
-
 }
 
+// "a4bc2d5e" => "aaaabccddddde"
+
 func (s PackedString) Unpack() string {
-	var lastRune, lastLetter rune
-	var res, num strings.Builder
-	var esc bool
-
-	res.Reset()
-	num.Reset()
-	lastRune = 0
-	lastLetter = 0
-
-	for i, rune := range s {
-		if unicode.IsDigit(rune) && i == 0 {
-			return ""
+	var (
+		sb      strings.Builder
+		sbA     strings.Builder
+		temp    string
+		amount  string
+		escaped bool
+	)
+	for i, v := range s {
+		if escaped {
+			temp = string(v)
+			sb.WriteRune(v)
+			escaped = false
+			continue
 		}
-		if unicode.IsLetter(rune) {
-			// letter after digit
-			if unicode.IsLetter(lastRune) {
-				numRunes, err := strconv.Atoi(num.String())
-				if err != nil {
-					log.Fatal(err)
+		if _, err := strconv.ParseInt(string(v), 0, 64); err == nil {
+			amount = string(v)
+			if i == len(s)-1 {
+				amountN, _ := strconv.ParseInt(string(amount), 0, 64)
+				for i := int64(0); i < amountN-1; i++ {
+					sb.WriteString(temp)
+					continue
 				}
-				for j := 0; j < numRunes-1; j++ {
-					res.WriteRune(lastLetter)
-				}
-				num.Reset()
+				continue
 			}
-			// any letter
-			res.WriteRune(rune)
-			lastLetter = rune
-			lastRune = rune
-		}
-		// write to digit sequence or flush letters to result
-		if unicode.IsDigit(rune) {
-			// espace digit
-			if esc {
-				res.WriteRune(rune)
-				lastLetter = rune
-				lastRune = rune
-				esc = false
-			} else {
-				// first digit of new digit sequence
-				if unicode.IsLetter(lastRune) {
-					num.Reset()
-				}
-				num.WriteRune(rune)
-				lastRune = rune
-				// last digit in input string
-				if i == utf8.RuneCountInString(string(s))-1 {
-					numRunes, err := strconv.Atoi(num.String())
-					if err != nil {
-						log.Fatal(err)
-					}
-					for j := 0; j < numRunes-1; j++ {
-						res.WriteRune(lastLetter)
-					}
-				}
-
+			sbA.WriteString(amount)
+			continue
+		} else if amount != "" {
+			amountN, _ := strconv.ParseInt(string(amount), 0, 64)
+			for i := int64(0); i < amountN-1; i++ {
+				sb.WriteString(temp)
+				continue
 			}
-		}
-		if rune == '\\' {
-			if lastRune == '\\' {
-				res.WriteRune(rune)
-				lastLetter = rune
-				lastRune = rune
-				esc = false
-			} else {
-				esc = false
-				lastRune = rune
-			}
+			amount = ""
+			sbA.Reset()
 		}
 
+		if string(v) == `\` {
+			escaped = true
+			continue
+		}
+		temp = string(v)
+		sb.WriteRune(v)
+	}
+	if len(sb.String()) == 0 && len(s) != 0 {
+		return ""
 	}
 
-	return res.String()
+	return sb.String()
 }
