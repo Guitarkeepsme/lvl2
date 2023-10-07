@@ -34,7 +34,7 @@ func Flags() {
 	// Дополнительные функции
 	flag.BoolVar(&month, "M", false, "сортировать по названию месяца")
 	flag.BoolVar(&backspace, "b", false, "игнорировать хвостовые пробелы")
-	flag.BoolVar(&check, "c", false, "проверять, отсортированные ли данные")
+	flag.BoolVar(&check, "c", false, "проверять, отсортированы ли данные")
 	flag.BoolVar(&numberSuff, "h", false, "сортировать по числовому значению с учётом суффиксов")
 	flag.StringVar(&filename, "f", "", "путь до файла")
 	flag.Parse()
