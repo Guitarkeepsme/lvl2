@@ -43,7 +43,6 @@ import (
 func or(channels ...<-chan interface{}) <-chan interface{} {
 	merged := make(chan interface{}) // Этот канал будет сообщать о закрытии какого-либо другого канала
 
-			case <-closer:
 	go func() {
 		defer close(merged)
 		done := make(chan interface{}, len(channels))
