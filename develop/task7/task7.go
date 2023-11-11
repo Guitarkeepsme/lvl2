@@ -41,21 +41,39 @@ import (
 )
 
 func or(channels ...<-chan interface{}) <-chan interface{} {
-	all := make(chan interface{}) // Этот канал будет сообщать о закрытии какого-либо другого канала
+	merged := make(chan interface{}) // Этот канал будет сообщать о закрытии какого-либо другого канала
 
-	for i, channel := range channels { // Слушаем каналы
-		go func(ch <-chan interface{}, closer chan interface{}) {
-			select {
-			case <-ch:
-				fmt.Printf("Канал %d закрылся!\n", i)
-				close(all)
 			case <-closer:
+	go func() {
+		defer close(merged)
+		done := make(chan interface{}, len(channels))
+		defer close(done)
 
-			}
+		for _, c := range channels {
+			go func(ch <-chan interface{}) {
+				<-ch
 
-		}(channel, all)
-	}
-	return all
+				done <- struct{}{}
+			}(c)
+		}
+		for i := 0; i < len(channels); i++ {
+			<-done
+		}
+
+	}()
+	// for i, channel := range channels { // Слушаем каналы
+	// 	go func(ch <-chan interface{}, closer chan interface{}, i int) {
+	// 		select {
+	// 		case <-ch:
+	// 			fmt.Printf("Канал %d закрылся!\n", i)
+	// 			close(merged)
+	// 		case <-closer:
+	//
+	// 		}
+
+	// 	}(channel, merged, i)
+	// }
+	return merged
 }
 
 func sig(after time.Duration) <-chan interface{} {
@@ -71,9 +89,9 @@ func main() {
 	start := time.Now()
 
 	<-or(
-		sig(5*time.Second),
+		sig(1*time.Second),
+		sig(4*time.Second),
 		sig(3*time.Second),
-		sig(2*time.Second),
 	)
-	fmt.Printf("Время закрытия канала: %v", start)
+	fmt.Printf("Завершено спустя %v\n", time.Since(start))
 }
