@@ -39,7 +39,7 @@ func main() {
 		// Если строка некорректна, выбрасываем панику
 		// согласно условиям задачи
 	} else if pkdString.Unpack() == "" {
-		panic("Некорректная строка!")
+		fmt.Println("Некорректная строка")
 	} else {
 		fmt.Println("Распакованная строка: ", pkdString.Unpack())
 	}
@@ -56,7 +56,7 @@ func (s PackedString) Unpack() string {
 	// и флаг, фиксирующий экранирование
 	var (
 		sb      strings.Builder
-		sbA     strings.Builder
+		sbN10   strings.Builder
 		temp    string
 		amount  string
 		escaped bool
@@ -78,6 +78,7 @@ func (s PackedString) Unpack() string {
 		if _, err := strconv.ParseInt(string(v), 0, 64); err == nil {
 			// записываем это число в переменную количества
 			amount = string(v)
+			fmt.Println(amount)
 			// Как только дошли до последнего символа в строке
 			// запоминаем количество символов
 			if i == len(s)-1 {
@@ -91,12 +92,13 @@ func (s PackedString) Unpack() string {
 				continue
 			}
 			// Фиксируем количество повторений символа строки
-			sbA.WriteString(amount)
+			sbN10.WriteString(amount)
+
 			continue
 			// И если там что-то записано, переводим строку в число
 			// и циклом, равным этому числу, записываем символ в temp
-		} else if amount != "" {
-			amountN, _ := strconv.ParseInt(string(amount), 0, 64)
+		} else {
+			amountN, _ := strconv.ParseInt(sbN10.String(), 0, 64)
 			for i := int64(0); i < amountN-1; i++ {
 				sb.WriteString(temp)
 				continue
@@ -104,7 +106,7 @@ func (s PackedString) Unpack() string {
 			// После чего очищаем amount
 			amount = ""
 			// И обнуляем счётчик повторений
-			sbA.Reset()
+			sbN10.Reset()
 		}
 
 		// Если попался символ экранирования, переключаем флаг
