@@ -44,7 +44,7 @@ func main() {
 			log.Fatal(err)
 		}
 		input = strings.TrimSpace(input)
-		fmt.Println(input)
+		// fmt.Println(input)
 
 		args := strings.Split(input, " ")
 

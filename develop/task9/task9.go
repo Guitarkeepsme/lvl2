@@ -40,7 +40,7 @@ func download(path string) (*os.File, error) {
 	body, err := io.ReadAll(res.Body)
 	defer res.Body.Close()
 	if res.StatusCode > 299 {
-		log.Fatalf("Соединение разорвано, код: %d \nи тело: %s\n", res.StatusCode, body)
+		log.Fatalf("Соединение разорвано, код: %d \n тело: %s\n", res.StatusCode, body)
 	}
 	if err != nil {
 		return nil, err
