@@ -37,7 +37,7 @@ func (t *Telnet) Start() {
 	// Отложенно закрываем соединение
 	defer conn.Close()
 
-	// Начинаем бесконечный цикл работы клиента
+	// Начинаем работу
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		cmd, err := reader.ReadString('\n')
@@ -56,7 +56,7 @@ func (t *Telnet) Start() {
 		text, err := serverReader.ReadString('\n')
 		if err != nil {
 			if errors.Is(err, io.EOF) {
-				fmt.Fprintln(os.Stdout, "Закрыва соединение с сервером...")
+				fmt.Fprintln(os.Stdout, "Закрываю соединение с сервером...")
 			}
 			fmt.Fprintln(os.Stderr, err)
 			return

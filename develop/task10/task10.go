@@ -19,11 +19,10 @@ package main
 
 import (
 	"flag"
+	"go-telnet/internal/client"
+	"go-telnet/internal/server"
 	"os"
 	"time"
-
-	"github.com/guitarkeepsme/task10.go/internal/client"
-	"github.com/guitarkeepsme/task10.go/internal/server"
 )
 
 var (
