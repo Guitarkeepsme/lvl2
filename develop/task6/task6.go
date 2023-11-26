@@ -25,12 +25,19 @@ var (
 	delimiter, separated bool
 )
 
+type applicationParams struct {
+	fields    int
+	delimiter bool
+	separated bool
+}
+
 func main() {
 	var (
 		text string
 		err  error
 	)
-	setFlags()
+	params := &applicationParams{}
+	setFlags(params)
 
 	fmt.Println(fields)
 	fmt.Println(separated)
@@ -59,10 +66,10 @@ func main() {
 }
 
 // Инициализируем необходимые флаги
-func setFlags() {
-	flag.IntVar(&fields, "f", 0, "установить номер поля или колонки")
-	flag.BoolVar(&delimiter, "d", false, "использовать другой разделитель")
-	flag.BoolVar(&separated, "s", false, "выбрать только строки с разделителем")
+func setFlags(p *applicationParams) {
+	flag.IntVar(&p.fields, "f", 0, "установить номер поля или колонки")
+	flag.BoolVar(&p.delimiter, "d", false, "использовать другой разделитель")
+	flag.BoolVar(&p.separated, "s", false, "выбрать только строки с разделителем")
 	flag.Parse()
 }
 

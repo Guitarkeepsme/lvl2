@@ -37,41 +37,31 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
 func or(channels ...<-chan interface{}) <-chan interface{} {
 	merged := make(chan interface{}) // Этот канал будет сообщать о закрытии какого-либо другого канала
 
+	wg := sync.WaitGroup{}
+	wg.Add(len(channels))
+
+	for _, c := range channels {
+		go func(ch <-chan interface{}) {
+			defer wg.Done()
+
+			for value := range ch {
+				merged <- value
+			}
+		}(c)
+	}
+
 	go func() {
-		defer close(merged)
-		done := make(chan interface{}, len(channels))
-		defer close(done)
-
-		for _, c := range channels {
-			go func(ch <-chan interface{}) {
-				<-ch
-
-				done <- struct{}{}
-			}(c)
-		}
-		for i := 0; i < len(channels); i++ {
-			<-done
-		}
-
+		wg.Wait()
+		close(merged)
 	}()
-	// for i, channel := range channels { // Слушаем каналы
-	// 	go func(ch <-chan interface{}, closer chan interface{}, i int) {
-	// 		select {
-	// 		case <-ch:
-	// 			fmt.Printf("Канал %d закрылся!\n", i)
-	// 			close(merged)
-	// 		case <-closer:
-	//
-	// 		}
 
-	// 	}(channel, merged, i)
-	// }
 	return merged
 }
 

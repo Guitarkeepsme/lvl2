@@ -65,6 +65,3 @@ func (w *WalletFacade) deductMoneyFromWallet(accountID string, securityCode int,
 	w.ledger.makeEntry(accountID, "debit", amount)
 	return nil
 }
-
-// За этим фасадом скрывается сложная структура структур, которые представлены
-// в разных файлах

@@ -34,8 +34,7 @@ var (
 	backspace  bool
 	check      bool
 	numberSuff bool
-
-	filename string
+	filename   string
 )
 
 func Flags() {
