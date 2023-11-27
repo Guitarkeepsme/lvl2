@@ -91,7 +91,8 @@ func (s PackedString) Unpack() string {
 			// Как только дошли до последнего символа в строке
 			// запоминаем количество символов
 			if i == len(s)-1 {
-				amountN, _ := strconv.ParseInt(string(amount), 0, 64)
+				sbN10.WriteString(amount)
+				amountN, _ := strconv.ParseInt(sbN10.String(), 0, 64)
 				// и проходим циклом по всем символам,
 				// собирая строку в переменную temp
 				for i := int64(0); i < amountN-1; i++ {

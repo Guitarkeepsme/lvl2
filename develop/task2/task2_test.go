@@ -27,10 +27,10 @@ func TestTask2(t *testing.T) {
 			expected: "dddddddkjjjjjjjjjji",
 		},
 
-		// {
-		// 	str:      "d7kj10",
-		// 	expected: "dddddddkjjjjjjjjjj", КАК ИСПРАВИТЬ ЭТУ ОШИБКУ????
-		// },
+		{
+			str:      "d7kj10",
+			expected: "dddddddkjjjjjjjjjj",
+		},
 		{
 			str:      "45",
 			expected: "",
