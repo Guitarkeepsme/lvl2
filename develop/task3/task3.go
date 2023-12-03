@@ -10,6 +10,15 @@
 -r — сортировать в обратном порядке
 -u — не выводить повторяющиеся строки
 
+Дополнительно
+
+Реализовать поддержку утилитой следующих ключей:
+
+-M — сортировать по названию месяца
+-b — игнорировать хвостовые пробелы
+-c — проверять отсортированы ли данные
+-h — сортировать по числовому значению с учетом суффиксов
+
 */
 
 package main
@@ -70,6 +79,10 @@ func (b ByColumn) Less(i, j int) bool {
 	colmnI := strings.Fields(b.lines[i])[b.colmn-1]
 	colmnJ := strings.Fields(b.lines[j])[b.colmn-1]
 	return colmnI < colmnJ
+}
+
+func sortByColumn(strings []string, column int) {
+	sort.Sort(ByColumn{strings, column})
 }
 
 func readFile(filename string) (res []string, err error) {

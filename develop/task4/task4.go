@@ -22,12 +22,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"sort"
 	"strings"
 )
 
-func checkAnagram(words *[]string) *map[string]*[]string {
+func checkAnagram(words *[]string) map[string]*[]string {
 	anagrams := make(map[string][]string)
 	res := make(map[string]*[]string)
 
@@ -53,7 +55,7 @@ func checkAnagram(words *[]string) *map[string]*[]string {
 		*res[key] = append(*res[key], k...)
 	}
 
-	return &res
+	return res
 }
 
 func sortString(s string) string {
@@ -69,6 +71,14 @@ func sortMap(anagrams *map[string][]string) {
 }
 
 func main() {
-	str := &[]string{"пятак", "пятка", "тяпка", "кот", "кто", "бор", "рука", "кура", "раку", "dsf", "dfs", "fds"}
-	fmt.Println(checkAnagram(str))
+	str := &[]string{"пятак", "пятка", "тяпка", "кот", "кто", "бор",
+		"рука", "кура", "раку", "dsf", "dfs", "fds", "умник"}
+
+	// Для убоства чтения конвертируем в json
+	res, err := json.Marshal(checkAnagram((str)))
+	if err != nil {
+		log.Fatal("Ошибка при переводе в json")
+		return
+	}
+	fmt.Println(string(res))
 }

@@ -44,14 +44,14 @@ func main() {
 	}
 
 	if len(files) == 0 {
-		fmt.Println("Необходим файл")
+		fmt.Println("Введите команду")
 		return
 	}
 
 	for _, file := range files {
 		err := filterFile(file, pattern, *after, *before, *context, *count, *ignoreCase, *invert, *fixed, *lineNum)
 		if err != nil {
-			fmt.Printf("Error filtering file %s: %s\n", file, err)
+			fmt.Printf("Ошибка при фильтрации файла %s: %s\n", file, err)
 		}
 	}
 }
@@ -68,9 +68,15 @@ func filterFile(file, pattern string, after, before, context int, count, ignoreC
 	lineCount := 0
 	lines := []string{}
 
+	mapLines := make(map[int]string)
+
 	for scanner.Scan() {
 		line := scanner.Text()
+
+		lines = append(lines, line)
 		lineCount++
+
+		mapLines[lineCount] = line
 
 		if ignoreCase {
 			if fixed && strings.EqualFold(line, pattern) {
@@ -94,8 +100,26 @@ func filterFile(file, pattern string, after, before, context int, count, ignoreC
 			}
 		}
 
-		if after > 0 && len(lines) > after {
+		test := []string{}
+
+		if after > 0 && lineCount > after {
+
+			for key, value := range mapLines {
+				if key < lineCount {
+					continue
+				}
+				for afterCount := 0; afterCount < after; afterCount++ {
+					// fmt.Println(value)
+					test = append(test, value)
+				}
+
+			}
+
+			fmt.Println(strings.Join(test, "\n"))
+
+			// fmt.Println("Ok!")
 			lines = lines[1:]
+			// fmt.Println(lines)
 		}
 
 		if before > 0 || context > 0 {
@@ -106,8 +130,10 @@ func filterFile(file, pattern string, after, before, context int, count, ignoreC
 		}
 	}
 
+	fmt.Println(mapLines)
+
 	if count {
-		fmt.Printf("Match count in file %s: %d\n", file, matchCount)
+		fmt.Printf("Совпадений в файле %s: %d\n", file, matchCount)
 	}
 
 	return nil
