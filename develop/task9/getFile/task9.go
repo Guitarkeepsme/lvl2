@@ -1,3 +1,5 @@
+// Поскольку оригинальный wget скачивает файл, добавил сооветствующую реализацию.
+
 package main
 
 import (
@@ -10,8 +12,6 @@ import (
 
 var bytesToMegaBytes = 1048576.0
 
-// PassThru code originally from
-// http://stackoverflow.com/a/22422650/613575
 type PassThru struct {
 	io.Reader
 	curr  int64
@@ -22,7 +22,6 @@ func (pt *PassThru) Read(p []byte) (int, error) {
 	n, err := pt.Reader.Read(p)
 	pt.curr += int64(n)
 
-	// last read will have EOF err
 	if err == nil || (err == io.EOF && n > 0) {
 		printProgress(float64(pt.curr), pt.total)
 	}
@@ -36,7 +35,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	//"http://ipv4.download.thinkbroadband.com/5MB.zip"
 	resp, err := http.Get(os.Args[1])
 	if err != nil {
 		log.Fatal(err)
@@ -57,7 +55,7 @@ func main() {
 		return
 	}
 
-	fmt.Printf("\nFile Transferred. (%.1f MB)\n", float64(size)/bytesToMegaBytes)
+	fmt.Printf("\nФайл загружен. (%.1f MB)\n", float64(size)/bytesToMegaBytes)
 }
 
 func printProgress(curr, total float64) {

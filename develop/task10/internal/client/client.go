@@ -66,7 +66,7 @@ func (t *Telnet) Start() {
 	}
 }
 
-// Эта функция просто объединяет две строки в одну
+// Эта функция объединяет две строки в одну
 func AddressBuilder(host, port string) string {
 	return host + port
 }

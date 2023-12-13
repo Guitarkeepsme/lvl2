@@ -5,8 +5,6 @@ import (
 	"time"
 )
 
-// Представим, что у нас есть задача -- реализовать продажу ноутбуков Asus и HP.
-// Для начала вводим константные типы этих ноутбуков
 const (
 	AsusCollectorType = "Asus"
 	HpCollectorType   = "HP"
@@ -120,19 +118,19 @@ func (hp *HPCollector) GetComputer() computer {
 	}
 }
 
-type factory struct {
+type Director struct {
 	collector collector
 }
 
-func newFactory(cl collector) *factory {
-	return &factory{collector: cl}
+func newDirector(cl collector) *Director {
+	return &Director{collector: cl}
 }
 
-func (fc *factory) setCollector(collector collector) {
+func (fc *Director) setCollector(collector collector) {
 	fc.collector = collector
 }
 
-func (fc *factory) createcomputer() computer {
+func (fc *Director) createcomputer() computer {
 	fc.collector.SetCore()
 	fc.collector.SetMemory()
 	fc.collector.SetGraphicCard()
@@ -145,14 +143,14 @@ func Builder() {
 	asusCollector := getCollector(AsusCollectorType)
 	hpCollector := getCollector(HpCollectorType)
 
-	factory := newFactory(asusCollector)
-	asusComputer := factory.createcomputer()
+	director := newDirector(asusCollector)
+	asusComputer := director.createcomputer()
 	asusComputer.Print()
 
 	time.Sleep(time.Second * 2)
 
-	factory.setCollector(hpCollector)
-	hpComputer := factory.createcomputer()
+	director.setCollector(hpCollector)
+	hpComputer := director.createcomputer()
 	hpComputer.Print()
 
 	fmt.Println("Строитель реализован.")

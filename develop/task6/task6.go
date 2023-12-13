@@ -7,6 +7,7 @@
 -d - "delimiter" - использовать другой разделитель
 -s - "separated" - только строки с разделителем
 */
+
 package main
 
 import (
