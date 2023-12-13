@@ -72,7 +72,7 @@ func sortMap(anagrams *map[string][]string) {
 
 func main() {
 	str := &[]string{"пятак", "пятка", "тяпка", "кот", "кто", "бор",
-		"рука", "кура", "раку", "dsf", "dfs", "fds", "умник"}
+		"рука", "кура", "раку", "верфь", "умник"}
 
 	// Для убоства чтения конвертируем в json
 	res, err := json.Marshal(checkAnagram((str)))

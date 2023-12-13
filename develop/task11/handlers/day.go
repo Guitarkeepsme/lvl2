@@ -11,6 +11,7 @@ import (
 )
 
 func GetDayEventHandler(w http.ResponseWriter, r *http.Request, c *cache.Cache) {
+
 	if r.Method != http.MethodGet {
 		domain.ErrorLogger(w, errors.New("method error"))
 		return

@@ -12,6 +12,7 @@ import (
 )
 
 func CreateEventHandler(w http.ResponseWriter, r *http.Request, c *cache.Cache) {
+
 	if r.Method != http.MethodPost {
 		domain.ErrorLogger(w, errors.New("method error"))
 		return

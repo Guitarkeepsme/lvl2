@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -31,8 +32,8 @@ func (c *Cache) Create(e *models.Event) {
 	// Перед возвращением функции открываем мьютекс
 	defer c.mutex.Unlock()
 
-	// Вносим в кэш дату в качестве ключа и событие в качестве значения
 	c.storage[e.Date] = append(c.storage[e.Date], e)
+
 }
 
 // Метод, который обновляет событие
@@ -87,6 +88,7 @@ func (c *Cache) ReadDay(date string) ([]*models.Event, bool) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	val, ok := c.storage[date]
+	fmt.Println(val)
 	if ok {
 		return val, true
 	}
