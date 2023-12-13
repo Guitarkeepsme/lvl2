@@ -139,7 +139,7 @@ func (fc *Director) createcomputer() computer {
 	return fc.collector.GetComputer()
 }
 
-func Builder() {
+func BuilderPattern() {
 	asusCollector := getCollector(AsusCollectorType)
 	hpCollector := getCollector(HpCollectorType)
 
